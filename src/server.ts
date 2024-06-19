@@ -1,5 +1,5 @@
 import Fastify from 'fastify';
-import fastifyEtag from 'fastify-etag';
+import fastifyEtag from '@fastify/etag';
 
 interface User {
   name: string;
@@ -44,8 +44,8 @@ fastify.get('/my-info', async (request, reply) => {
 
 const start = async () => {
   try {
-    await fastify.listen(process.env.PORT || 3000, '0.0.0.0');
-    console.log(`Server is running at http://localhost:${process.env.PORT || 3000}`);
+    await fastify.listen({ port: Number(process.env.PORT) || 3000, host: '0.0.0.0' });
+    console.log(`Server is running at PORT:${Number(process.env.PORT) || 3000}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
