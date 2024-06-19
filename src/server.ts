@@ -116,6 +116,27 @@ fastify.get('/static', async (request, reply) => {
   reply.send(staticContent);
 });
 
+fastify.get('/staticEtag', async (request, reply) => {
+  console.log('Received request for static info');
+  console.log('Incoming headers:', request.headers);
+  const ifNoneMatch = request.headers['if-none-match'];
+  console.log('If-None-Match header:', ifNoneMatch);
+
+  const staticContent = {
+    message: 'This will serve a static etag',
+  };
+
+  reply.type('application/json');
+  // Set the Cache-Control headers
+  reply.headers({
+    'cache-control': 'must-revalidate, max-age=60', // Example of using both directives
+    vary: 'authorization'
+  });
+
+  reply.header('etag', '"foobar"')
+  reply.send(staticContent);
+});
+
 const start = async () => {
   try {
     await fastify.listen({ port: Number(process.env.PORT) || 3000, host: '0.0.0.0' });
