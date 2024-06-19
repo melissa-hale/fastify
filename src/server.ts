@@ -3,7 +3,7 @@ import fastifyEtag from '@fastify/etag';
 import { MongoClient, Db, ObjectId } from 'mongodb';
 
 interface User {
-  _id: ObjectId;
+  _id: string;
   name: string;
   email: string;
 }
@@ -45,7 +45,7 @@ fastify.get('/my-info', async (request, reply) => {
   console.log(`Received request for user: ${userId}`);
 
   try {
-    const user = await db.collection<User>('users').findOne({ _id: new ObjectId(userId) });
+    const user = await db.collection<User>('users').findOne({ _id: userId });
 
     if (!user) {
       console.log(`User with ID ${userId} not found.`);
@@ -55,10 +55,10 @@ fastify.get('/my-info', async (request, reply) => {
     console.log(`User with ID ${userId} found: ${JSON.stringify(user)}`);
 
     reply.type('application/json');
-    // it will be cached on CDN for 30 seconds, and on client for 60
-    // the request cache use depends on "Authorization" content
+    // instruct CloudFront to check the server for changes
+    // cache the response in the browser for 60s
     reply.headers({
-      'cache-control': 's-maxage=86400,max-age=1800',
+      'cache-control': 'must-revalidate, max-age=60',
       vary: 'authorization'
     });
 
