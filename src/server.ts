@@ -79,6 +79,25 @@ fastify.get('/my-info', async (request, reply) => {
   }
 });
 
+fastify.get('/', async (request, reply) => {
+  console.log('Received request for static info');
+  console.log('Incoming headers:', request.headers);
+  console.log('If-None-Match header:', request.headers['if-none-match']);
+
+  const staticContent = {
+    message: 'This is some static content',
+    timestamp: new Date().toISOString(),
+  };
+
+  reply.type('application/json');
+  reply.headers({
+    'cache-control': 'must-revalidate, max-age=60',
+    vary: 'authorization'
+  });
+
+  reply.send(staticContent);
+});
+
 const start = async () => {
   try {
     await fastify.listen({ port: Number(process.env.PORT) || 3000, host: '0.0.0.0' });
