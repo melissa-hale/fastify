@@ -85,8 +85,26 @@ fastify.get('/', async (request, reply) => {
   console.log('If-None-Match header:', request.headers['if-none-match']);
 
   const staticContent = {
-    message: 'This is some static content',
+    message: 'This is some dynamic content',
     timestamp: new Date().toISOString(),
+  };
+
+  reply.type('application/json');
+  reply.headers({
+    'cache-control': 'must-revalidate, max-age=60',
+    vary: 'authorization'
+  });
+
+  reply.send(staticContent);
+});
+
+fastify.get('/static', async (request, reply) => {
+  console.log('Received request for static info');
+  console.log('Incoming headers:', request.headers);
+  console.log('If-None-Match header:', request.headers['if-none-match']);
+
+  const staticContent = {
+    message: 'This is some static content',
   };
 
   reply.type('application/json');
