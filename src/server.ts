@@ -7,7 +7,7 @@ interface User {
 }
 
 const users: Record<string, User> = {
-  'one': { name: 'Alice', email: 'alice@email.com' },
+  'one': { name: 'Alice', email: 'alice1@email.com' },
   'two': { name: 'Bob', email: 'bob@email.com' }
 };
 
@@ -28,7 +28,7 @@ fastify.get('/my-info', async (request, reply) => {
   // it will be cached on CDN for 30 seconds, and on client for 60
   // the request cache use depends on "Authorization" content
   reply.headers({
-    'cache-control': 's-maxage=30,max-age=60',
+    'cache-control': 's-maxage=86400,max-age=1800',
     vary: 'authorization'
   });
 
