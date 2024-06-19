@@ -1,6 +1,6 @@
 import Fastify from 'fastify';
 import fastifyEtag from '@fastify/etag';
-import { MongoClient, Db, ObjectId } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 
 interface User {
   _id: string;
@@ -43,6 +43,9 @@ fastify.get('/my-info', async (request, reply) => {
   const userId = token.substr('user:'.length);
 
   console.log(`Received request for user: ${userId}`);
+  console.log(`Incoming headers:`, request.headers);
+  console.log(`If-None-Match header: ${request.headers['if-none-match']}`);
+
 
   try {
     const user = await db.collection<User>('users').findOne({ _id: userId });
